@@ -1,9 +1,11 @@
 package com.example.MicroService.Turno.Service;
 
+import com.example.MicroService.Turno.Model.Paciente;
 import com.example.MicroService.Turno.Model.Turno;
 import com.example.MicroService.Turno.Repository.ITurnoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
 import java.util.Date;
@@ -15,6 +17,9 @@ public class TurnoService implements ITurnoService{
     @Autowired
     private ITurnoRepository repoTurno;
 
+    @Autowired
+    private RestTemplate apiConsumir;
+
 
     @Override
     public List<Turno> getTurno() {
@@ -25,13 +30,15 @@ public class TurnoService implements ITurnoService{
     public void saveTurno(LocalDate fecha, String tratamiento, String dniPaciente) {
 
         //Buscar el paciente en la Api paciente
-        //paciente pac = buscar en al api
+        Paciente pac = apiConsumir.getForObject("http://localhost:9001/paciente/traerdni/" + dniPaciente,
+                Paciente.class);
         //String nombreCompletoPaciente = lo que consumo del nombre de la api
+        String nombreCompletoPaciente = pac.getNombre() + " " + pac.getApellido();
 
         Turno turno = new Turno();
         turno.setFecha(fecha);
         turno.setTratamiento(tratamiento);
-        //turno.setNombreCompletoPaciente();
+        turno.setNombreCompletoPaciente(nombreCompletoPaciente);
 
         repoTurno.save(turno);
 

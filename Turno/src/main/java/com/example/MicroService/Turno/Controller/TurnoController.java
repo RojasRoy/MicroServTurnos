@@ -1,5 +1,6 @@
 package com.example.MicroService.Turno.Controller;
 
+import com.example.MicroService.Turno.DTO.TurnoDTO;
 import com.example.MicroService.Turno.Model.Turno;
 import com.example.MicroService.Turno.Service.ITurnoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +18,8 @@ public class TurnoController {
 
     //1 crear un nuevo turno
     @PostMapping("/crear")
-    public String crearTurno(@RequestBody LocalDate fecha,
-                             @RequestBody String tratamiento,
-                             @RequestBody String dniPaciente){
-        turnoServ.saveTurno(fecha, tratamiento,dniPaciente);
+    public String crearTurno(@RequestBody TurnoDTO turno){
+        turnoServ.saveTurno(turno.getFecha(), turno.getTratamiento(), turno.getDniPaciente());
 
         return "turno creado correctamente";
     }
